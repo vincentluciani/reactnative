@@ -6,37 +6,48 @@ import {
   View,
   Image,
   Alert,
-  Button,
+  TextInput,
   TouchableOpacity,
+  ScrollView,
+  FlatList,
 } from "react-native";
 
+import GoalItem from "./components/GoalItem.js";
+import GoalInput from "./components/GoalInput.js";
 export default function App() {
   let x = 1;
-  const [outputText, setOutputText] = useState(
-    "Hello Mister Vincent ! How is life now in Warsaw, Poland ?"
-  );
+
+  const [enteredGoals, setEnteredGoals] = useState([]);
+
   const Separator = () => <View style={styles.separator} />;
   const handlePress = () => console.log("text pressed");
   console.log("test in progress sir");
 
+  const addGoalHandler = (goalTitle) => {
+    setEnteredGoals((enteredGoals) => [
+      ...enteredGoals,
+      { key: Math.random().toString(), value: goalTitle },
+    ]);
+    /*Alert.alert("New goal:" + enteredGoal);*/
+  };
   return (
     <View style={styles.container}>
-      <Text numberOfLines={1} onPress={handlePress}>
-        {outputText}
-      </Text>
+      <View style={styles.banner}>
+        <Text style={styles.bannerText}>Discipline</Text>
+      </View>
+      <Image
+        source={require("./assets/capturing-the-human-heart-TrhLCn1abMU-unsplash.jpg")}
+        style={styles.logo}
+      />
       <Separator />
-      <Image source={require("./assets/icon.png")} style={styles.logo} />
+      <GoalInput onAddGoal={addGoalHandler} />
       <Separator />
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          setOutputText("Very well, thank you Vincent sir");
-          Alert.alert("Button pressed");
-        }}
-      >
-        <Text style={styles.buttonTitle}>Button</Text>
-      </TouchableOpacity>
-      <StatusBar style="auto" />
+      <FlatList
+        keyExtractor={(item, index) => item.key}
+        style={styles.scrollingArea}
+        data={enteredGoals}
+        renderItem={(itemData) => <GoalItem title={itemData.item.value} />}
+      ></FlatList>
     </View>
   );
 }
@@ -47,25 +58,35 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     alignItems: "center",
     justifyContent: "center",
+    padding: 0,
   },
   logo: {
-    width: 66,
-    height: 58,
+    width: "100%",
+    height: 200,
   },
-  button: {
-    backgroundColor: "#788fdf",
-    paddingHorizontal: 30,
-    paddingVertical: 5,
-    borderRadius: 5,
-  },
-  buttonTitle: {
-    fontSize: 40,
-    fontWeight: "400",
-    color: "#fff",
-  },
+
   separator: {
-    marginVertical: 8,
+    marginVertical: 20,
     borderBottomColor: "#737373",
     borderBottomWidth: StyleSheet.hairlineWidth,
+  },
+
+  banner: {
+    width: "100%",
+    color: "white",
+    height: 100,
+    backgroundColor: "#eb3d3d",
+    flex: 1,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    paddingLeft: 20,
+    paddingTop: 20,
+  },
+  bannerText: {
+    color: "white",
+    fontSize: 30,
+  },
+  scrollingArea: {
+    height: 100,
   },
 });
